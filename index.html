@@ -31,7 +31,7 @@
   transition: max-height .35s ease, opacity .3s ease;
 }
 .stepActions.active { opacity: 1; }
-.stepActions .resourceGroup { display: flex; flex-wrap: wrap; gap: 10px; } /* ===== HERO CENTRÉ (titre, texte, boutons) ===== */.heroText { text-align: center; } .heroText .btnRow { justify-content: center; } .heroText .kicker { margin-left: auto; margin-right: auto; } /* ===== HERO : centrage du sous-titre ===== */#heroSubtitle { text-align: center; margin-left: auto; margin-right: auto; max-width: 70ch; } /* ===== MASQUAGE DES BOUTONS DANS INTRO ===== */#introBody .resourceGroup, #introBody .btn { display: none !important; } /* ===== MASQUAGE TITRE MÉNINGITE DANS INTRO ===== */#introBody > div[style*="font-weight"] { display: none !important; } /* ===== PULSE VISUEL DES ÉTAPES (INCITATION AU CLIC) ===== */.stepItem { position: relative; transition: box-shadow 0.3s ease, transform 0.3s ease; } .stepItem.pulse { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.6); animation: stepPulse 1.2s ease-out; } @keyframes stepPulse { 0% {  box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.6);  transform: scale(1); }  60% {  box-shadow: 0 0 0 10px rgba(56, 189, 248, 0);  transform: scale(1.015); }  100% {  box-shadow: 0 0 0 0 rgba(56, 189, 248, 0);  transform: scale(1); } } /* ===== AJUSTEMENT MOBILE ===== */@media (max-width: 768px) { .stepItem.pulse {  animation-duration: 1.4s; } } /* ===== FIX TAILLE + POSITION ICONES ÉTAPES ===== */.stepItem { display: flex; align-items: flex-start; gap: 14px; } .stepIllustration { width: 56px; height: 56px; min-width: 56px; max-width: 56px; object-fit: contain; flex-shrink: 0; }
+.stepActions .resourceGroup { display: flex; flex-wrap: wrap; gap: 10px; } /* ===== HERO CENTRÉ (titre, texte, boutons) ===== */.heroText { text-align: center; } .heroText .btnRow { justify-content: center; } #heroBtns { flex-direction: column; align-items: center; } .heroText .kicker { margin-left: auto; margin-right: auto; } /* ===== HERO : centrage du sous-titre ===== */#heroSubtitle { text-align: center; margin-left: auto; margin-right: auto; max-width: 70ch; } /* ===== MASQUAGE DES BOUTONS DANS INTRO ===== */#introBody .resourceGroup, #introBody .btn { display: none !important; } /* ===== MASQUAGE TITRE MÉNINGITE DANS INTRO ===== */#introBody > div[style*="font-weight"] { display: none !important; } /* ===== PULSE VISUEL DES ÉTAPES (INCITATION AU CLIC) ===== */.stepItem { position: relative; transition: box-shadow 0.3s ease, transform 0.3s ease; } .stepItem.pulse { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.6); animation: stepPulse 1.2s ease-out; } @keyframes stepPulse { 0% {  box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.6);  transform: scale(1); }  60% {  box-shadow: 0 0 0 10px rgba(56, 189, 248, 0);  transform: scale(1.015); }  100% {  box-shadow: 0 0 0 0 rgba(56, 189, 248, 0);  transform: scale(1); } } /* ===== AJUSTEMENT MOBILE ===== */@media (max-width: 768px) { .stepItem.pulse {  animation-duration: 1.4s; } } /* ===== FIX TAILLE + POSITION ICONES ÉTAPES ===== */.stepItem { display: flex; align-items: flex-start; gap: 14px; } .stepIllustration { width: 56px; height: 56px; min-width: 56px; max-width: 56px; object-fit: contain; flex-shrink: 0; }
 .stepIllustration {
   width: 56px;
   height: 56px;
@@ -761,6 +761,16 @@ introTitle: {
       ku: "فۆرمی ڕەزامەندیی ئۆنلاین پڕ بکەوە",
       ro: "Completați formularul de autorizare online",
       ka: "შეავსეთ ონლაინ თანხმობის ფორმა"
+    },
+    heroFormLabel: {
+      fr: "Remplissez l'autorisation parentale maintenant",
+      en: "Fill out the parental authorization now",
+      ar: "املأ إذن الوالدين الآن",
+      tr: "Ebeveyn iznini şimdi doldurun",
+      ps: "اوس د والدینو اجازه ډکه کړئ",
+      ku: "ئێستا ڕەزامەندیی دایک و باوک پڕ بکەوە",
+      ro: "Completați acum autorizația parentală",
+      ka: "შეავსეთ მშობლის თანხმობა ახლავე"
     }
   };
 
@@ -913,6 +923,15 @@ else {
     if(idfUrl){
       els.heroBtns.appendChild(makeBtn(idfLabel, idfUrl, 'btn'));
     }
+
+    // Formulaire d'autorisation en ligne, dupliqué ici juste sous le bouton du site officiel
+    els.heroBtns.appendChild(
+      makeBtn(
+        t(UI_TEXT.heroFormLabel, "Remplissez l'autorisation parentale maintenant"),
+        `autorisation-vaccination.html?lang=${encodeURIComponent(lang)}`,
+        'btn btn-cta-animated'
+      )
+    );
 
     // Les 3 vidéos sont désormais lues directement dans leur propre section (renderVideos)
   }
@@ -1340,7 +1359,9 @@ div.addEventListener('click', (e) => {
     }
 
     // ÉTAPE 2 — Consentement
-    if (step.number === 2 && ['form_online','registration_hpv'].includes(key)) {
+    // registration_hpv (lien ARS) volontairement retiré de cette liste : il n'est plus cloné
+    // dans l'étape 2, mais le bouton d'origine existe toujours (masqué) dans #introBody.
+    if (step.number === 2 && ['form_online'].includes(key)) {
       group.appendChild(clone);
     }
 
